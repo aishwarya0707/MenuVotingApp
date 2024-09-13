@@ -3,18 +3,11 @@ from django.utils import timezone
 
 from users.models import Employee
 
-# Create your models here.
-# models.py
-
-
 class Restaurant(models.Model):
     name = models.CharField(max_length=255, unique=True)
     address = models.TextField()
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     cuisine_type = models.CharField(max_length=100, blank=True, null=True)
-    # remove
-    # opening_hours = models.TextField(blank=True, null=True)
-
     def __str__(self):
         return self.name
 
@@ -23,8 +16,8 @@ class Menu(models.Model):
     restaurant = models.ForeignKey(
         Restaurant, related_name="menus", on_delete=models.CASCADE
     )
-    date = models.DateField()  # Changed to DateField
-    items = models.TextField()  # Consider using a more structured format if needed
+    date = models.DateField() 
+    items = models.TextField()  
     votes = models.IntegerField(default=0)
 
     class Meta:
