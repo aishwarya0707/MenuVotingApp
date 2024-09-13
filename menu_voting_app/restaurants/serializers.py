@@ -11,8 +11,8 @@ class RestaurantSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = Restaurant  # Specifies the model this serializer is associated with.
-        fields = "__all__"  # Include all fields of the Restaurant model in the serialization.
+        model = Restaurant 
+        fields = "__all__" 
 
 
 class MenuSerializer(serializers.ModelSerializer):
@@ -21,13 +21,13 @@ class MenuSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = Menu  # Specifies the model this serializer is associated with.
+        model = Menu 
         fields = [
             "id",
             "restaurant",
             "items",
             "date",
-        ]  # Specifies which fields to include in the serialization.
+        ]
 
 
 class VoteSerializer(serializers.ModelSerializer):
@@ -36,13 +36,8 @@ class VoteSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = Vote  # Specifies the model this serializer is associated with.
-        fields = [
-            "menu",
-            "employee",
-            "points",
-            # "voted_date",
-        ]  # Specifies which fields to include in the serialization.
+        model = Vote
+        fields = ["menu", "employee", "points"]
 
 
 class VoteRequestSerializer(serializers.Serializer):
@@ -53,16 +48,11 @@ class VoteRequestSerializer(serializers.Serializer):
     employee_id = serializers.PrimaryKeyRelatedField(
         queryset=Employee.objects.all()
     )  # Validate employee ID against Employee model.
-    # voted_date = serializers.DateField()  # Validate that voted_date is a valid date.
-    menu_1 = serializers.PrimaryKeyRelatedField(
-        queryset=Menu.objects.all()
-    )  # Validate that menu_1 is a valid Menu instance.
-    menu_2 = serializers.PrimaryKeyRelatedField(
-        queryset=Menu.objects.all()
-    )  # Validate that menu_2 is a valid Menu instance.
-    menu_3 = serializers.PrimaryKeyRelatedField(
-        queryset=Menu.objects.all()
-    )  # Validate that menu_3 is a valid Menu instance.
+
+    menuItems = Menu.objects.all()
+    menu_1 = serializers.PrimaryKeyRelatedField(queryset=menuItems)
+    menu_2 = serializers.PrimaryKeyRelatedField(queryset=menuItems)
+    menu_3 = serializers.PrimaryKeyRelatedField(queryset=menuItems)
 
     def validate(self, data):
         """
