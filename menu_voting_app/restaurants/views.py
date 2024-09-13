@@ -1,7 +1,6 @@
 from django.db.models import Sum
 from django.utils import timezone
 from rest_framework import generics, status, versioning
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from .models import Menu, Restaurant, Vote
@@ -39,7 +38,7 @@ class RestaurantCreateView(generics.CreateAPIView):
                         "message": "Restaurant created successfully.",
                         "data": serializer.data,
                     },
-                    status=status.HTTP_201_CREATED,  # HTTP 201 Created status code.
+                    status=status.HTTP_201_CREATED,
                     headers=headers,
                 )
             return Response(
@@ -47,7 +46,7 @@ class RestaurantCreateView(generics.CreateAPIView):
                     "message": "Validation failed.",
                     "errors": serializer.errors,
                 },  # Return validation errors.
-                status=status.HTTP_400_BAD_REQUEST,  # HTTP 400 Bad Request status code.
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
             return Response(
@@ -55,7 +54,7 @@ class RestaurantCreateView(generics.CreateAPIView):
                     "message": "An error occurred during restaurant creation.",
                     "error": str(e),
                 },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,  # HTTP 500 Internal Server Error status code.
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
 
@@ -89,7 +88,7 @@ class MenuCreateView(generics.CreateAPIView):
                         "message": "Menu item created successfully.",
                         "data": serializer.data,
                     },
-                    status=status.HTTP_201_CREATED,  # HTTP 201 Created status code.
+                    status=status.HTTP_201_CREATED,
                     headers=headers,
                 )
             return Response(
@@ -97,12 +96,12 @@ class MenuCreateView(generics.CreateAPIView):
                     "message": "Validation failed.",
                     "errors": serializer.errors,
                 },  # Return validation errors.
-                status=status.HTTP_400_BAD_REQUEST,  # HTTP 400 Bad Request status code.
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
             return Response(
                 {"message": "An error occurred during menu creation.", "error": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,  # HTTP 500 Internal Server Error status code.
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
 
@@ -112,7 +111,7 @@ class MenuListView(generics.ListAPIView):
     """
 
     serializer_class = (
-        MenuSerializer  # Defines the serializer class to serialize the output data.
+        MenuSerializer  
     )
 
     def get_queryset(self):
@@ -164,7 +163,7 @@ class VoteMenuAPIView(generics.CreateAPIView):
         Returns the appropriate serializer class based on the API version.
         """
         build_version = self.request.META.get(
-            "HTTP_BUILD_VERSION"
+            "HTTP_BUILD_VERSION",
         )  # Get the API version from request headers.
 
         if build_version == "old":
@@ -189,7 +188,7 @@ class VoteMenuAPIView(generics.CreateAPIView):
         if not serializer.is_valid():
             return Response(
                 {"error": "Invalid data", "details": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST,  # HTTP 400 Bad Request status code.
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
@@ -204,12 +203,12 @@ class VoteMenuAPIView(generics.CreateAPIView):
             else:
                 return Response(
                     {"error": "Invalid API version"},
-                    status=status.HTTP_400_BAD_REQUEST,  # HTTP 400 Bad Request status code.
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
         except Exception as e:
             return Response(
                 {"error": "An error occurred during voting.", "details": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,  # HTTP 500 Internal Server Error status code.
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
     def vote_single_menu(self, request, serializer):
@@ -232,13 +231,13 @@ class VoteMenuAPIView(generics.CreateAPIView):
                         {
                             "error": "You have already voted for this menu today"
                         },  # Return error if the user has already voted today.
-                        status=status.HTTP_400_BAD_REQUEST,  # HTTP 400 Bad Request status code.
+                        status=status.HTTP_400_BAD_REQUEST,
                     )
 
                 serializer.save()  # Save the vote.
                 return Response(
                     {"message": "Vote recorded successfully"},
-                    status=status.HTTP_200_OK,  # HTTP 200 OK status code.
+                    status=status.HTTP_200_OK,
                 )
             except Exception as e:
                 return Response(
@@ -246,14 +245,14 @@ class VoteMenuAPIView(generics.CreateAPIView):
                         "error": "An error occurred while recording the vote.",
                         "details": str(e),
                     },
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,  # HTTP 500 Internal Server Error status code.
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
         return Response(
             {
                 "error": "Invalid data",
                 "details": serializer.errors,
             },  # Return validation errors.
-            status=status.HTTP_400_BAD_REQUEST,  # HTTP 400 Bad Request status code.
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     def vote_multiple_menus(self, request, serializer):
@@ -278,7 +277,7 @@ class VoteMenuAPIView(generics.CreateAPIView):
                         {
                             "error": "You have already voted for today"
                         },  # Return error if the user has already voted today.
-                        status=status.HTTP_400_BAD_REQUEST,  # HTTP 400 Bad Request status code.
+                        status=status.HTTP_400_BAD_REQUEST,
                     )
 
                 # Process and save votes for the three menus.
@@ -293,7 +292,7 @@ class VoteMenuAPIView(generics.CreateAPIView):
 
                 return Response(
                     {"message": "Votes recorded successfully"},
-                    status=status.HTTP_201_CREATED,  # HTTP 201 Created status code.
+                    status=status.HTTP_201_CREATED,
                 )
             except Exception as e:
                 return Response(
@@ -301,14 +300,14 @@ class VoteMenuAPIView(generics.CreateAPIView):
                         "error": "An error occurred while recording votes.",
                         "details": str(e),
                     },
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,  # HTTP 500 Internal Server Error status code.
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
         return Response(
             {
                 "error": "Invalid data",
                 "details": serializer.errors,
             },  # Return validation errors.
-            status=status.HTTP_400_BAD_REQUEST,  # HTTP 400 Bad Request status code.
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 
@@ -346,12 +345,12 @@ class VoteResultsForCurrentDayAPIView(generics.GenericAPIView):
                 serializer = self.get_serializer(max_votes_menu)
                 return Response(
                     {"menu": serializer.data, "total_votes": total_votes},
-                    status=status.HTTP_200_OK,  # HTTP 200 OK status code.
+                    status=status.HTTP_200_OK,
                 )
             else:
                 return Response(
                     {"msg": "No votes found for today.", "success": False},
-                    status=status.HTTP_404_NOT_FOUND,  # HTTP 404 Not Found status code.
+                    status=status.HTTP_404_NOT_FOUND,
                 )
         except Exception as e:
             return Response(
@@ -359,5 +358,5 @@ class VoteResultsForCurrentDayAPIView(generics.GenericAPIView):
                     "msg": "An error occurred while retrieving vote results.",
                     "error": str(e),
                 },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,  # HTTP 500 Internal Server Error status code.
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
