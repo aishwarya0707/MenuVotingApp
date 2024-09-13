@@ -2,7 +2,6 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from rest_framework import generics, status
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -99,8 +98,7 @@ class LogoutView(generics.CreateAPIView):
             )
 
 
-class CreateEmployeeAPIView(generics.CreateAPIView):
-    serializer_class = EmployeeSerializer
+class CreateEmployeeAPIView(APIView):
 
     def post(self, request):
         data = request.data
@@ -113,19 +111,17 @@ class CreateEmployeeAPIView(generics.CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # user_data = data.get("user")
-        email = data.get("user.email")
-        username = data.get("user.username")
-        user_profile, created = User.objects.get_or_create(
-            email=email, username=username
-        )
-        user_profile.save()
+        userDetails = data["user"]
+        email = userDetails["email"]
+        username = userDetails["username"]
+        userData, created = User.objects.get_or_create(email=email, username=username)
+        userData.save()
 
         try:
             # Create the employee
             employee = Employee.objects.create(
                 employee_id=employee_id,
-                user=user_profile,
+                user=userData,
                 date_of_joining=data.get("date_of_joining"),
             )
         except Exception as e:
