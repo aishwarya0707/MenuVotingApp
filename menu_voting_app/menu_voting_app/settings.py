@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     "restaurants",
     "users",
     # 'drf_redesign',
-    
 ]
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -78,7 +77,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "menu_voting_app.wsgi.application"
-
 
 
 # Define STATIC_ROOT to collect static files in a specific directory

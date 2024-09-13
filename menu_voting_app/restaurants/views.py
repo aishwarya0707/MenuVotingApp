@@ -218,10 +218,18 @@ class VoteMenuAPIView(generics.CreateAPIView):
         )  # Initialize serializer with request data.
         if serializer.is_valid():
             try:
-                menu_id = serializer.validated_data["menu"]
-                employee_id = serializer.validated_data["employee"]
+                data = serializer.validated_data
+                menu_id = data["menu"]
+                employee_id = data["employee"]
                 voted_date = timezone.now().date()
-
+                points = data["points"]
+                if points > 3 or points < 0:
+                    return Response(
+                        {
+                            "error": "Points must be not be greater than 3 or lesser than 0"
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
                 if Vote.objects.filter(
                     menu_id=menu_id, employee_id=employee_id, voted_date=voted_date
                 ).exists():
@@ -332,7 +340,6 @@ class VoteResultsForCurrentDayAPIView(generics.GenericAPIView):
                 .annotate(total_votes=Sum("points"))
                 .order_by("-total_votes")
             )
-
             if menu_votes:
                 # Get the menu with the maximum votes.
                 max_votes_menu_id = menu_votes[0]["menu"]

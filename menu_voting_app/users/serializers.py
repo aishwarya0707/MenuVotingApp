@@ -62,6 +62,15 @@ class LogoutSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
+    def validate(self, data):
+        """
+        Validate the user credentials and return the user if valid.
+        """
+        user = authenticate(username=data["username"], password=data["password"])
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Invalid credentials")
+
 
 class EmployeeSerializer(serializers.ModelSerializer):
     """

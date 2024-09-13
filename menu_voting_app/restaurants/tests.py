@@ -195,12 +195,24 @@ class VoteMenuAPIViewTestCase(APITestCase):
         data = {
             "menu": self.menu1.id,
             "employee": self.employee.id,
-            "points": 5,
+            "points": 2,
             "voted_date": timezone.now().date(),
         }
         response = self.client.post(self.vote_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], "Vote recorded successfully")
+
+    def test_vote_single_menu_old_version_invalid_points(self):
+        self.client.credentials(HTTP_BUILD_VERSION="old")
+        data = {
+            "menu": self.menu1.id,
+            "employee": self.employee.id,
+            "points": 5,
+            "voted_date": timezone.now().date(),
+        }
+        response = self.client.post(self.vote_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("error", response.data)
 
     def test_vote_multiple_menus_new_version(self):
         self.client.credentials(HTTP_BUILD_VERSION="new")

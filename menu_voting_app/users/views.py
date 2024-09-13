@@ -81,6 +81,7 @@ class LogoutView(generics.CreateAPIView):
         try:
             # Validate the serializer
             if serializer.is_valid():
+                user = serializer.validated_data
                 logout(request)  # Log the user out
                 return Response(
                     {"message": "Successfully logged out."}, status=status.HTTP_200_OK
