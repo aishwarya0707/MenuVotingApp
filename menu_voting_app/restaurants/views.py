@@ -110,9 +110,7 @@ class MenuListView(generics.ListAPIView):
     API view to list all menu items for a specific restaurant.
     """
 
-    serializer_class = (
-        MenuSerializer  
-    )
+    serializer_class = MenuSerializer
 
     def get_queryset(self):
         """

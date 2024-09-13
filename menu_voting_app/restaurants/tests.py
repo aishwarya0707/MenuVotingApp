@@ -227,6 +227,7 @@ class VoteMenuAPIViewTestCase(APITestCase):
         self.assertIn("error", response.data)
         self.assertIn("details", response.data)
 
+
 class VoteResultsForCurrentDayAPIViewTestCase(APITestCase):
     def setUp(self):
         # Create sample data
@@ -252,7 +253,7 @@ class VoteResultsForCurrentDayAPIViewTestCase(APITestCase):
         self.menu3 = Menu.objects.create(
             restaurant=self.restaurant, date="2024-09-12", items="Sushi", votes=0
         )
-        self.vote_url = reverse("vote-results-for-current-day") 
+        self.vote_url = reverse("vote-results-for-current-day")
 
     def _create_test_user(self, username, password):
         """
@@ -267,16 +268,10 @@ class VoteResultsForCurrentDayAPIViewTestCase(APITestCase):
             restaurant=self.restaurant, date=today, items="Pasta", votes=0
         )
         Vote.objects.create(
-            menu=self.menu_today,
-            employee=self.employee,
-            points=10,
-            voted_date=today
+            menu=self.menu_today, employee=self.employee, points=10, voted_date=today
         )
         Vote.objects.create(
-            menu=self.menu_today,
-            employee=self.employee,
-            points=15,
-            voted_date=today
+            menu=self.menu_today, employee=self.employee, points=15, voted_date=today
         )
 
         response = self.client.get(self.vote_url)
@@ -289,4 +284,3 @@ class VoteResultsForCurrentDayAPIViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data["msg"], "No votes found for today.")
         self.assertEqual(response.data["success"], False)
-

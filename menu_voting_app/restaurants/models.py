@@ -18,8 +18,8 @@ class Menu(models.Model):
     restaurant = models.ForeignKey(
         Restaurant, related_name="menus", on_delete=models.CASCADE
     )
-    date = models.DateField() 
-    items = models.TextField() 
+    date = models.DateField()
+    items = models.TextField()
     votes = models.IntegerField(default=0)
 
     class Meta:

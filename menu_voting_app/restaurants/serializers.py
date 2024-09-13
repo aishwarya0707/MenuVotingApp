@@ -11,8 +11,8 @@ class RestaurantSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = Restaurant 
-        fields = "__all__" 
+        model = Restaurant
+        fields = "__all__"
 
 
 class MenuSerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class MenuSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = Menu 
+        model = Menu
         fields = [
             "id",
             "restaurant",
