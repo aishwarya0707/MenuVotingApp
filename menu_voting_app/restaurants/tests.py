@@ -226,3 +226,67 @@ class VoteMenuAPIViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("error", response.data)
         self.assertIn("details", response.data)
+
+class VoteResultsForCurrentDayAPIViewTestCase(APITestCase):
+    def setUp(self):
+        # Create sample data
+        self.restaurant = Restaurant.objects.create(
+            name="Sample Restaurant",
+            address="123 Main St",
+            phone_number="123-456-7890",
+            cuisine_type="Italian",
+        )
+        self.employee = Employee.objects.create(
+            employee_id="E001",
+            user=self._create_test_user(username="john_doe", password="password123"),
+            job_title="Chef",
+            date_of_joining=timezone.now().date(),
+            department="Kitchen",
+        )
+        self.menu1 = Menu.objects.create(
+            restaurant=self.restaurant, date="2024-09-10", items="Pizza", votes=0
+        )
+        self.menu2 = Menu.objects.create(
+            restaurant=self.restaurant, date="2024-09-11", items="Burger", votes=0
+        )
+        self.menu3 = Menu.objects.create(
+            restaurant=self.restaurant, date="2024-09-12", items="Sushi", votes=0
+        )
+        self.vote_url = reverse("vote-results-for-current-day") 
+
+    def _create_test_user(self, username, password):
+        """
+        Helper method to create a test user.
+        """
+        user = User.objects.create_user(username=username, password=password)
+        return user
+
+    def test_successful_vote_results(self):
+        today = timezone.now().date()
+        self.menu_today = Menu.objects.create(
+            restaurant=self.restaurant, date=today, items="Pasta", votes=0
+        )
+        Vote.objects.create(
+            menu=self.menu_today,
+            employee=self.employee,
+            points=10,
+            voted_date=today
+        )
+        Vote.objects.create(
+            menu=self.menu_today,
+            employee=self.employee,
+            points=15,
+            voted_date=today
+        )
+
+        response = self.client.get(self.vote_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["total_votes"], 25)
+
+    def test_no_votes_for_today(self):
+        # Ensure no votes have been cast for today
+        response = self.client.get(self.vote_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data["msg"], "No votes found for today.")
+        self.assertEqual(response.data["success"], False)
+
