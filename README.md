@@ -139,7 +139,7 @@ docker-compose run --rm web ./manage.py createsuperuser
 
 docker-compose run --rm web black .
 
-# To static typing
+# To fix static typing
 
 docker-compose run --rm web isort .
 
