@@ -3,11 +3,13 @@ from django.utils import timezone
 
 from users.models import Employee
 
+
 class Restaurant(models.Model):
     name = models.CharField(max_length=255, unique=True)
     address = models.TextField()
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     cuisine_type = models.CharField(max_length=100, blank=True, null=True)
+
     def __str__(self):
         return self.name
 
@@ -17,7 +19,7 @@ class Menu(models.Model):
         Restaurant, related_name="menus", on_delete=models.CASCADE
     )
     date = models.DateField() 
-    items = models.TextField()  
+    items = models.TextField() 
     votes = models.IntegerField(default=0)
 
     class Meta:
