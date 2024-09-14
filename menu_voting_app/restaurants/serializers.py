@@ -60,7 +60,6 @@ class VoteRequestSerializer(serializers.Serializer):
         """
         menu_1, menu_2, menu_3 = data["menu_1"], data["menu_2"], data["menu_3"]
 
-        # Ensure all menu choices are unique
         if len({menu_1, menu_2, menu_3}) != 3:
             raise serializers.ValidationError(
                 "Menus must be unique."
